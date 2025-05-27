@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- maximum-scale will resize everything quickly -->
+    <!-- maximum-scale will resize everything quickly; user-scalability prevent zooming -->
     <meta name="viewport" content="width=device-width, maximum-scale=0.9, user-scalable=0">
     <title>Data Creator</title>
     <link rel="stylesheet" href="styles.css"/>
@@ -10,12 +10,35 @@
 <body>
     <div id="content">
         <h1>Data Creator</h1>
+        <div>
+            <input id="username" type="text" placeholder = "type your username" />
+            <button id="advanceBtn" onclick="start()">START</button>
+        </div>
         <br>
-        <div id="sketchPadContainer"></div>
+        <div id="sketchPadContainer"
+            style="visibility: hidden;"></div>
         <script src="js/sketchPad.js"></script>
         <script src="js/draw.js"></script>
         <script>
+            const data = {
+                username: null,
+                session: new Date().getTime(),
+                // store paths for all the different drawings asked of user
+                drawings:{}
+            }
             const sketchPad= new SketchPad(sketchPadContainer)
+
+            function start(){
+                const username = document.getElementById("username")
+                if(username.value==""){
+                    alert("Please input a username")
+                    return
+                }
+                data.username = username.value
+                username.style.display = "none"
+                const sketchPadContainer = document.getElementById("sketchPadContainer")
+                sketchPadContainer.style.visibility = "visible" 
+            }
         </script>
     </div>
 </body>
