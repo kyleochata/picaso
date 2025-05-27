@@ -9,5 +9,16 @@ draw.path = (ctx, path, color="black") => {
     for (let i = 1; i < path.length; i++) {
         ctx.lineTo(...path[i])
     }
+
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+
     ctx.stroke()
+}
+
+//draw multiple paths (so we dont have to one shot the drawing)
+draw.paths = (ctx, paths, color="black") => {
+    for (const path of paths) {
+        draw.path(ctx, path, color)
+    }
 }
