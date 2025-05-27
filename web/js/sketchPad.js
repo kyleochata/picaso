@@ -9,6 +9,15 @@ class SketchPad{
         `
         container.appendChild(this.canvas)
 
+        const lineBreak = document.createElement("br")
+        container.appendChild(lineBreak)
+
+        //undo button to reset drawing
+        this.undoBtn = document.createElement("button")
+        this.undoBtn.innerHTML = "UNDO"
+        this.undoBtn.disabled=true
+        container.appendChild(this.undoBtn)
+
         //to draw in canvas
         this.ctx = this.canvas.getContext("2d")
         //paths is [][int, int]
@@ -39,11 +48,34 @@ class SketchPad{
         this.canvas.onmouseup = () => {
             this.isDrawing = false
         }
+
+        this.canvas.ontouchstart = (event) => {
+            const location = event.touches[0];
+            this.canvas.onmousedown(location)
+        }
+        this.canvas.ontouchmove = (event) => {
+            const location = event.touches [0];
+            this.canvas.onmousemove(location)
+        }
+        this.canvas.ontouchend = () => {
+            this.canvas.onmouseup()
+        }
+
+        this.undoBtn.onclick = () => {
+            this.paths.pop()
+            this.#redraw();
+        }
     }
 
     #redraw() {
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         draw.paths(this.ctx, this.paths);
+
+        //if no more paths exist, disable undo button
+        this.paths.length > 0 
+            ? this.undoBtn.disabled = false 
+            : this.undoBtn.disabled = true
+
     }
     
     //Private method to return x, y coords in relation to canvas box
