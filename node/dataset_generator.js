@@ -1,6 +1,8 @@
-import { draw } from "../common/draw.mjs";
+import { draw } from "../common/draw.js";
 import fs from 'fs'
 import { createCanvas } from "canvas";
+
+// const draw = require("../common/draw")
 
 const canvas = createCanvas(400, 400)
 const ctx = canvas.getContext('2d')
@@ -52,7 +54,7 @@ fileNames.forEach(file => {
 fs.writeFileSync(constants.SAMPLES, JSON.stringify(samples))
 
 function generateImageFile(outFile, paths) {
-    //uses same canvas, so need to clear canvase after each drawing input
+    //uses same canvas for each of the samples, so need to clear canvase after each drawing input
     ctx.clearRect(0,0, canvas.width, canvas.height)
 
     draw.paths(ctx, paths);

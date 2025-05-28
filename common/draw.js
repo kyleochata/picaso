@@ -1,4 +1,4 @@
-export const draw = {}
+const draw = {}
 
 draw.path = (ctx, path, color="black") => {
     ctx.strokeStyle = color;
@@ -22,3 +22,9 @@ draw.paths = (ctx, paths, color="black") => {
         draw.path(ctx, path, color)
     }
 }
+
+//combined commonjs and ecm6 export. exposes draw globally on html; allows import syntax for node
+if (typeof module !== 'undefined') {
+    module.exports = {draw}
+}
+
