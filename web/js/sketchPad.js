@@ -12,20 +12,26 @@ class SketchPad{
         const lineBreak = document.createElement("br")
         container.appendChild(lineBreak)
 
-        //undo button to reset drawing
+        //undo button to remove last drawn path
         this.undoBtn = document.createElement("button")
         this.undoBtn.innerHTML = "UNDO"
-        this.undoBtn.disabled=true
         container.appendChild(this.undoBtn)
 
         //to draw in canvas
         this.ctx = this.canvas.getContext("2d")
         //paths is [][int, int]
-        this.paths = []
-        this.isDrawing = false
+        // this.paths = []
+        // this.isDrawing = false
+        this.reset()
 
         this.#addEventListeners();
         
+    }
+
+    reset() {
+        this.paths = []
+        this.isDrawing = false
+        this.#redraw();
     }
 
     #addEventListeners(){
@@ -44,10 +50,13 @@ class SketchPad{
                 this.#redraw();
             }
         }
-
-        this.canvas.onmouseup = () => {
+        //UX for stopping once mouse up even off canvas el
+        document.onmouseup = () => {
             this.isDrawing = false
         }
+        // this.canvas.onmouseup = () => {
+        //     this.isDrawing = false
+        // }
 
         this.canvas.ontouchstart = (event) => {
             const location = event.touches[0];
@@ -57,8 +66,8 @@ class SketchPad{
             const location = event.touches [0];
             this.canvas.onmousemove(location)
         }
-        this.canvas.ontouchend = () => {
-            this.canvas.onmouseup()
+        document.ontouchend = () => {
+            document.onmouseup()
         }
 
         this.undoBtn.onclick = () => {
@@ -68,6 +77,7 @@ class SketchPad{
     }
 
     #redraw() {
+        
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
         draw.paths(this.ctx, this.paths);
 
