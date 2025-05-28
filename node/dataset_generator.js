@@ -1,20 +1,14 @@
 import { draw } from "../common/draw.js";
 import fs from 'fs'
 import { createCanvas } from "canvas";
+import { constants } from "../common/constants.js";
+import { utils } from "../common/utils.js";
 
 // const draw = require("../common/draw")
 
 const canvas = createCanvas(400, 400)
 const ctx = canvas.getContext('2d')
-const constants = {}
 
-//PATHS
-constants.DATA_DIR = "../data"
-constants.RAW_DIR = constants.DATA_DIR + "/raw"
-constants.DATASET_DIR = constants.DATA_DIR + "/dataset"
-constants.JSON_DIR = constants.DATASET_DIR + "/json"
-constants.IMG_DIR = constants.DATASET_DIR + "/img"
-constants.SAMPLES = constants.DATASET_DIR + "/samples.json"
 
 const fileNames = fs.readdirSync(constants.RAW_DIR)
 const samples = []
@@ -46,12 +40,15 @@ fileNames.forEach(file => {
 
         //image representation of above data points
         generateImageFile(constants.IMG_DIR + "/" + id + ".png", paths)
+        //each file contains 8 drawings;
+        utils.printProgress(id, fileNames.length*8)
 
         id++
     }
 });
 
 fs.writeFileSync(constants.SAMPLES, JSON.stringify(samples))
+fs.writeFileSync(constants.SAMPLES_JS, "const samples = " + JSON.stringify(samples)+";")
 
 function generateImageFile(outFile, paths) {
     //uses same canvas for each of the samples, so need to clear canvase after each drawing input
