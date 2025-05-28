@@ -9,39 +9,83 @@ class SketchPad{
         `
         container.appendChild(this.canvas)
 
+        const lineBreak = document.createElement("br")
+        container.appendChild(lineBreak)
+
+        //undo button to remove last drawn path
+        this.undoBtn = document.createElement("button")
+        this.undoBtn.innerHTML = "UNDO"
+        container.appendChild(this.undoBtn)
+
         //to draw in canvas
         this.ctx = this.canvas.getContext("2d")
-        this.path = []
-        this.isDrawing = false
+        //paths is [][int, int]
+        // this.paths = []
+        // this.isDrawing = false
+        this.reset()
 
         this.#addEventListeners();
         
     }
 
+    reset() {
+        this.paths = []
+        this.isDrawing = false
+        this.#redraw();
+    }
+
     #addEventListeners(){
         this.canvas.onmousedown = (event) => {
             const mouse = this.#getMouse(event)
-            this.path=[mouse]
+            this.paths.push([mouse])
             this.isDrawing=true
         }
 
         this.canvas.onmousemove = (event) => {
             if (this.isDrawing) {
                 const mouse = this.#getMouse(event)
-                this.path.push(mouse)
+                const lastPath = this.paths[this.paths.length -1]
+                lastPath.push(mouse)
 
                 this.#redraw();
             }
         }
-
-        this.canvas.onmouseup = () => {
+        //UX for stopping once mouse up even off canvas el
+        document.onmouseup = () => {
             this.isDrawing = false
+        }
+        // this.canvas.onmouseup = () => {
+        //     this.isDrawing = false
+        // }
+
+        this.canvas.ontouchstart = (event) => {
+            const location = event.touches[0];
+            this.canvas.onmousedown(location)
+        }
+        this.canvas.ontouchmove = (event) => {
+            const location = event.touches [0];
+            this.canvas.onmousemove(location)
+        }
+        document.ontouchend = () => {
+            document.onmouseup()
+        }
+
+        this.undoBtn.onclick = () => {
+            this.paths.pop()
+            this.#redraw();
         }
     }
 
     #redraw() {
+        
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
-        draw.path(this.ctx, this.path);
+        draw.paths(this.ctx, this.paths);
+
+        //if no more paths exist, disable undo button
+        this.paths.length > 0 
+            ? this.undoBtn.disabled = false 
+            : this.undoBtn.disabled = true
+
     }
     
     //Private method to return x, y coords in relation to canvas box

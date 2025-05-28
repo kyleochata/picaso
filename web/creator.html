@@ -2,19 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- maximum-scale will resize everything quickly; user-scalability prevent zooming -->
+    <meta name="viewport" content="width=device-width, maximum-scale=0.9, user-scalable=0">
     <title>Data Creator</title>
     <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
     <div id="content">
         <h1>Data Creator</h1>
+        <div>
+            <input id="student" type="text" placeholder = "type your username" />
+            <span id="instructions"></span>
+            <button id="advanceBtn" onclick="start()">START</button>
+        </div>
         <br>
-        <div id="sketchPadContainer"></div>
+        <div id="sketchPadContainer"
+            style="visibility: hidden;"></div>
+           <script src="../common/draw.js"></script>
         <script src="js/sketchPad.js"></script>
-        <script src="js/draw.js"></script>
         <script>
+            let index = 0;
+            const labels = ["car", "fish", "house", "tree", "bicycle", "guitar", "pencil", "clock"]
+
+            const data = {
+                student: null,
+                session: new Date().getTime(),
+                // store paths for all the different drawings asked of user
+                drawings:{}
+            }
             const sketchPad= new SketchPad(sketchPadContainer)
+            const instructions = document.getElementById("instructions")
+            const advanceBtn = document.getElementById("advanceBtn")
+
+            function start(){
+                const username = document.getElementById("student")
+                if(username.value==""){
+                    alert("Please input a username")
+                    return
+                }
+                data.student = username.value
+                username.style.display = "none"
+                const sketchPadContainer = document.getElementById("sketchPadContainer")
+                sketchPadContainer.style.visibility = "visible" 
+
+                const label = labels[index]
+                // const instructions = document.getElementById("instructions")
+                instructions.innerHTML = `Please draw a ${label}`
+                advanceBtn.innerHTML = "NEXT"
+                advanceBtn.onclick = next
+            }
+            //next: saves current drawings paths and advances to next item to draw
+            function next(){
+                if(sketchPad.paths.length == 0) {
+                    alert('Please draw something first')
+                    return
+                }
+                const label = labels[index]
+                data.drawings[label] = sketchPad.paths
+                sketchPad.reset();
+                index++
+                if (index < labels.length) {
+
+                    const nextLabel = labels[index]
+                    instructions.innerHTML = `Please draw a ${nextLabel}`
+                }
+                else {
+                    const sketchPadContainer = document.getElementById("sketchPadContainer")
+                    sketchPadContainer.style.visibility = "hidden"
+                    instructions.innerHTML = "Thank you for participating"
+                    advanceBtn.innerHTML = "SAVE"
+                    advanceBtn.onclick=save
+                }
+            }
+
+            //save() --> creates an anchor el that encodes users data as a JSON string for download locally
+            function save(){
+                advanceBtn.style.display = "none";
+                instructions.innerHTML = "Take your downloaded file and place it alongside the others in the dataset"
+                const element = document.createElement('a')
+                element.setAttribute('href',
+                    'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data))
+                )
+
+                const fileName = data.session+".json"
+                element.setAttribute("download", fileName)
+
+                //quick way to add the json file to the html page, download then remove
+                element.style.display = 'none'
+                document.body.appendChild(element)
+                element.click()
+                document.body.removeChild(element)
+
+            }
         </script>
     </div>
 </body>

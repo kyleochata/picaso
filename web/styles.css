@@ -1,6 +1,7 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
     background-color: skyblue;
+    overscroll-behavior: none;
 }
 #content {
     position: absolute;
@@ -8,4 +9,59 @@ body{
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    padding: 2px 10px;
+    height: 22px;
+    border-radius: 5px;
+    background-color: navy;
+    color: white;
+}
+
+button:hover {
+    background-color: mediumblue;;
+}
+
+button:disabled,
+button:disabled:hover {
+    background-color: gray;
+    cursor: default;
+}
+
+.row {
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.thumb {
+    width: 100%;
+    /* border: 3px solid black; */
+}
+
+.rowLabel {
+    /* 2: 20% of row is taken by rowLabel */
+    flex: 2 1 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    /* justify-content: center;
+    align-items: center; */
+    text-align: center;
+}
+
+.sampleContainer {
+    flex: 1 1 0;
+    background: white;
+    text-align: center;
+    border-radius: 10%;
+    margin: 1px;
+    overflow: hidden;
+}
+
+.blur {
+    filter: blur(5px)
 }
