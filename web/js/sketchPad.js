@@ -1,9 +1,9 @@
-class SketchPad{
-    constructor(container, size=400) {
+class SketchPad {
+    constructor(container, onUpdate = null, size = 400) {
         this.canvas = document.createElement("canvas")
-        this.canvas.width=size
-        this.canvas.height=size
-        this.canvas.style=`
+        this.canvas.width = size
+        this.canvas.height = size
+        this.canvas.style = `
             background-color: white;
             box-shadow: 0px 0px 10px 2px black;
         `
@@ -22,10 +22,12 @@ class SketchPad{
         //paths is [][int, int]
         // this.paths = []
         // this.isDrawing = false
+
+        this.onUpdate = onUpdate
         this.reset()
 
         this.#addEventListeners();
-        
+
     }
 
     reset() {
@@ -34,17 +36,17 @@ class SketchPad{
         this.#redraw();
     }
 
-    #addEventListeners(){
+    #addEventListeners() {
         this.canvas.onmousedown = (event) => {
             const mouse = this.#getMouse(event)
             this.paths.push([mouse])
-            this.isDrawing=true
+            this.isDrawing = true
         }
 
         this.canvas.onmousemove = (event) => {
             if (this.isDrawing) {
                 const mouse = this.#getMouse(event)
-                const lastPath = this.paths[this.paths.length -1]
+                const lastPath = this.paths[this.paths.length - 1]
                 lastPath.push(mouse)
 
                 this.#redraw();
@@ -63,7 +65,7 @@ class SketchPad{
             this.canvas.onmousedown(location)
         }
         this.canvas.ontouchmove = (event) => {
-            const location = event.touches [0];
+            const location = event.touches[0];
             this.canvas.onmousemove(location)
         }
         document.ontouchend = () => {
@@ -77,17 +79,25 @@ class SketchPad{
     }
 
     #redraw() {
-        
-        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height)
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         draw.paths(this.ctx, this.paths);
 
         //if no more paths exist, disable undo button
-        this.paths.length > 0 
-            ? this.undoBtn.disabled = false 
+        this.paths.length > 0
+            ? this.undoBtn.disabled = false
             : this.undoBtn.disabled = true
 
+        this.triggerUpdate()
+
     }
-    
+
+    triggerUpdate() {
+        if (this.onUpdate) {
+            this.onUpdate(this.paths)
+        }
+    }
+
     //Private method to return x, y coords in relation to canvas box
     #getMouse = (event) => {
         const rectangle = this.canvas.getBoundingClientRect();

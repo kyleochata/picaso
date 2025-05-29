@@ -41,6 +41,32 @@ utils.groupBy = (objArr, key) => {
     return groups
 }
 
+//for getting the nearest neighbor(s) when using the dynamicPoint for classification!
+utils.distance = (p1, p2) => {
+   return Math.sqrt(
+      (p1[0] - p2[0]) ** 2 +
+      (p1[1] - p2[1]) ** 2
+   );
+}
+
+//loc = dynamicPoint while drawing. Points == all the extracted data height and widths. Returns the index of the
+//nearest point's index to the dynamicPoint
+utils.getNearest = (loc, points) => {
+   let minDist = Number.MAX_SAFE_INTEGER;
+   let nearestIndex = 0;
+
+   for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      const d = utils.distance(loc, point);
+
+      if (d < minDist) {
+         minDist = d;
+         nearestIndex = i;
+      }
+   }
+   return nearestIndex;
+}
+
 if (typeof module !== 'undefined') {
     module.exports = { utils }
 }

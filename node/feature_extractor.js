@@ -1,5 +1,5 @@
 import { constants } from "../common/constants.js";
-import { features } from "../common/features.js";
+import { featureFunctions } from "../common/featureFunctions.js";
 import fs from 'fs'
 
 console.log("EXTRACTING FEATURES START")
@@ -16,13 +16,15 @@ for (const sample of samples) {
         )
     )
 
-    sample.point = [
-        features.getPathCount(paths),
-        features.getPointCount(paths)
-    ]
+    const functions = featureFunctions.inUse.map(func => func.function)
+    sample.point = functions.map(f => f(paths))
+    // sample.point = [
+    //     featureFunctions.getPathCount(paths),
+    //     featureFunctions.getPointCount(paths)
+    // ]
 }
 
-const featureNames = ["Path Count", "Point Count"]
+const featureNames = featureFunctions.inUse.map(ft => ft.name)
 
 fs.writeFileSync(constants.FEATURES, 
     JSON.stringify({

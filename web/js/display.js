@@ -62,7 +62,14 @@ function handleClick(sample, doScroll = true) {
 }
 
 function toggleInput() {
-    inputContainer.style.display == "none"
-    ? inputContainer.style.display = "block"
-    : inputContainer.style.display = "none"
+    // inputContainer.style.display == "none"
+    // ? inputContainer.style.display = "block"
+    // : inputContainer.style.display = "none"
+    if (inputContainer.style.display === "none") {
+        inputContainer.style.display = "block"
+        sketchPad.triggerUpdate()
+    } else {
+        inputContainer.style.display = "none"
+        chart.hideDynamicPoint()
+    }
 }
