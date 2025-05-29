@@ -9,10 +9,11 @@ function createRow(container, username, samples) {
     row.appendChild(rowLabel)
 
     for (let sample of samples) {
-        const {id, label, user_id} = sample;
+        const { id, label, user_id } = sample;
 
         const sampleContainer = document.createElement("div")
-        sampleContainer.id = "sample_"+id
+        sampleContainer.id = "sample_" + id
+        sampleContainer.onclick = () => handleClick(sample, false)
         sampleContainer.classList.add("sampleContainer")
 
         const sampleLabel = document.createElement("div")
@@ -28,4 +29,40 @@ function createRow(container, username, samples) {
         sampleContainer.appendChild(img)
         row.appendChild(sampleContainer)
     }
+}
+
+function handleClick(sample, doScroll = true) {
+    //sample is null when clicking on the chart dead space.
+    if (sample === null) {
+        [...document.querySelectorAll('.emphasize')].
+            forEach((element) => element.classList.remove('emphasize'))
+        return
+    }
+    const element = document.getElementById("sample_" + sample.id)
+
+    //when clicking the image already emphasized
+    if (element.classList.contains("emphasize")) {
+        element.classList.remove("emphasize")
+        chart.selectSample(null)
+        return
+    }
+
+    [...document.querySelectorAll('.emphasize')].
+        forEach((element) => element.classList.remove('emphasize'))
+    element.classList.add("emphasize")
+    //scroll screen to the image and user who created it when clicking in the chart
+    if (doScroll) {
+        element.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+        })
+    }
+    //will select the icon in the chart, when clicking on the image in the list
+    chart.selectSample(sample)
+}
+
+function toggleInput() {
+    inputContainer.style.display == "none"
+    ? inputContainer.style.display = "block"
+    : inputContainer.style.display = "none"
 }
