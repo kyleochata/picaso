@@ -19,6 +19,7 @@
     </div>
     <div id="container"></div>
     <script src="../common/js_objects/features.js"></script>
+    <script src="../common/js_objects/minMax.js"></script>
     <script src="../common/constants.js"></script>
     <script src="../common/utils.js"></script>
     <script src="../common/draw.js"></script>
@@ -60,10 +61,7 @@
 
             const functions = featureFunctions.inUse.map(func => func.function)
             const point = functions.map(f => f(paths))
-            // const point = [
-            //     featureFunctions.getPathCount(paths),
-            //     featureFunctions.getPointCount(paths)
-            // ]
+            utils.normalizePoints([point], minMax)
             const {label, nearestSample} = classify(point)
             const predictedLabel = document.getElementById("predictedLabelContainer")
             predictedLabel.innerHTML = `Are you drawing a ${label}?`

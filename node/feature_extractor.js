@@ -1,4 +1,5 @@
 import { constants } from "../common/constants.js";
+import { utils } from "../common/utils.js";
 import { featureFunctions } from "../common/featureFunctions.js";
 import fs from 'fs'
 
@@ -24,6 +25,10 @@ for (const sample of samples) {
     // ]
 }
 
+const minMax = utils.normalizePoints(
+    samples.map(sample => sample.point)
+)
+
 const featureNames = featureFunctions.inUse.map(ft => ft.name)
 
 fs.writeFileSync(constants.FEATURES, 
@@ -41,6 +46,10 @@ fs.writeFileSync(constants.FEATURES,
 fs.writeFileSync(constants.FEATURES_JS,
     `const features = ${JSON.stringify({featureNames, samples})};`
 
+)
+
+fs.writeFileSync(constants.MIN_MAX_JS, 
+    `const minMax = ${JSON.stringify(minMax)}`
 )
 
 console.log("EXTACTING FTS END. Check /dataset/features.json")
