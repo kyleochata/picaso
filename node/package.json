@@ -1,15 +1,7 @@
 {
-  "name": "nobbl",
-  "version": "1.0.0",
-  "main": "dataset_generator.js",
-  "type":"module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node dataset_generator.js"
+    "postinstall": "node dataset_generator && node feature_extractor && node run_evaluation"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "canvas": "^3.1.0"
   }
